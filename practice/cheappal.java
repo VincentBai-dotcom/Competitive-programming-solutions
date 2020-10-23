@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import java.util.*;
 /**
  *
@@ -11,36 +10,23 @@ import java.util.*;
  */
 public class cheappal {
     public static void main(String[] args) {
-        Scanner ms = new Scanner(System.in);
-        int N = ms.nextInt();
-        int M = ms.nextInt();
-        int[] incost = new int[26];
-        int[] decost = new int[26];
-        String str = ms.next();
-        char[] cha = new char[M];
-        for(int i = 0; i < M;i++){
-            cha[i] = str.charAt(i);
-        }
+        Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();
+        int M = sc.nextInt();
+        String str = sc.next();
+        char[] c = str.toCharArray();
+        int[][] cost = new int[26][2];
         for(int i = 0; i < N;i++){
-            String cur = ms.next();
-            int a = ms.nextInt();
-            int b = ms.nextInt();
-            incost[cur.charAt(0)-97] = a;
-            decost[cur.charAt(0)-97] = b;
+            String cur = sc.next();
+            cost[cur.charAt(0)-'a'][0] = sc.nextInt();
+            cost[cur.charAt(0)-'a'][1] = sc.nextInt();
         }
-        int[][] dp = new int[M][M];
-        for(int t = 1; t < M;t++){
-            for(int i = 0; i < M-t;i++){
-                int j = i+t;
-                    if(cha[i] == cha[j])
-                        dp[i][j] = dp[i+1][j-1];
-                    else{
-                        dp[i][j] = Integer.MAX_VALUE;
-                        dp[i][j] = Math.min(dp[i][j], dp[i+1][j]+incost[cha[i]-97]);
-                        dp[i][j] = Math.min(dp[i][j], dp[i+1][j]+decost[cha[i]-97]);
-                        dp[i][j] = Math.min(dp[i][j], dp[i][j-1]+incost[cha[j]-97]);
-                        dp[i][j] = Math.min(dp[i][j], dp[i][j-1]+decost[cha[j]-97]);
-                    }
+        long[][] dp = new long[M][M];
+        for(int i = 1; i < M;i++){
+            for(int j = 0; j < M-i;j++){
+                dp[j][j+i] = Math.min(dp[i][j+i-1]+cost[j+i][0],dp[i][j+i-1]+cost[j+i][1]);
+                dp[j][j+i] = Math.min(dp[j][j+i], dp[j+1][j+i]+cost[j][0]);
+                dp[j][j+i] = Math.min(dp[j][j+i], dp[j+1][j+i]+cost[j][1]);
             }
         }
         System.out.println(dp[0][M-1]);
